@@ -21,7 +21,7 @@ int main() {
         return 1; 
     }
 
-    printf("Digite os %d elementos do vetor:\n", tamanhoV);  // solicita os elementos do vetor
+    printf("Digite os elementos do vetor:\n");  // solicita os elementos do vetor
     for (i = 0; i < tamanhoV; i++) {
         scanf("%d", &vetor[i]); // percorre cada elemento do vetor
     }

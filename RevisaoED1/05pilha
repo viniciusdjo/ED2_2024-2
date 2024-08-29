@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define INITIAL_SIZE 3  // tamanho inicial da pilha
+
+// estrutura da pilha dinâmica
+typedef struct {
+    int *array;    // array que guarda os elementos da pilha
+    int topo;      // topo da pilha
+    int capacidade; // capacidade da pilha
+} Pilha;
+
+// criar uma pilha com capacidade inicial
+Pilha* criar_pilha() {
+    Pilha* p = (Pilha*)malloc(sizeof(Pilha));
+    p->capacidade = INITIAL_SIZE;
+    p->array = (int*)malloc(p->capacidade * sizeof(int));
+    p->topo = -1;
+    return p;
+}
+
+// verificar se a pilha está vazia
+int pilha_vazia(Pilha* p) {
+    return p->topo == -1;
+}
+
+// expandir a capacidade da pilha
+void expandir_pilha(Pilha* p) {
+    int nova_capacidade = p->capacidade * 2; // duplica a capacidade
+    int* novo_array = (int*)malloc(nova_capacidade * sizeof(int));
+    
+    // copia os elementos da pilha antiga para a nova
+    for (int i = 0; i < p->capacidade; i++) {
+        novo_array[i] = p->array[i];
+    }
+    
+    // libera a memória do array antigo
+    free(p->array);
+    
+    // atualiza a pilha com o novo array e nova capacidade
+    p->array = novo_array;
+    p->capacidade = nova_capacidade;
+}
+
+// inserir um elemento na pilha
+void push(Pilha* p, int elemento) {
+    if (p->topo == p->capacidade - 1) {
+        // se estiver cheia aumenta a capacidade
+        expandir_pilha(p);
+    }
+    p->array[++p->topo] = elemento;
+}
+
+// remover um elemento da pilha
+int pop(Pilha* p) {
+    if (pilha_vazia(p)) {
+        printf("Pilha vazia!\n");
+        return -1;
+    } else {
+        return p->array[p->topo--];
+    }
+}
+
+//obter o elemento no topo da pilha
+int top(Pilha* p) {
+    if (pilha_vazia(p)) {
+        printf("Pilha vazia!\n");
+        return -1;
+    } else {
+        return p->array[p->topo];
+    }
+}
+
+// imprimir o conteúdo da pilha
+void imprimir(Pilha* p) {
+    printf("Conteúdo da pilha:\n");
+    for (int i = p->topo; i >= 0; i--) {
+        printf("%d ", p->array[i]);
+    }
+    printf("\n");
+}
+
+// liberar a memória
+void liberar_pilha(Pilha* p) {
+    free(p->array);
+    free(p);
+}
+
+int main() {
+    Pilha* p = criar_pilha();  
+    
+    push(p, 10);
+    push(p, 20);
+    push(p, 30);
+    imprimir(p);
+    
+    printf("Elemento no topo: %d\n", top(p));
+    
+    push(p, 40); 
+    imprimir(p);
+    
+    printf("Elemento removido: %d\n", pop(p));
+    imprimir(p);
+    
+    liberar_pilha(p);  
+    return 0;
+}

@@ -1,0 +1,122 @@
+#include <stdio.h>
+#define MAX_SIZE 10
+
+int lista[MAX_SIZE];
+int tamanho = 0;
+
+void inserir(int elemento) {
+    if (tamanho < MAX_SIZE) {
+        lista[tamanho++] = elemento;
+    } else {
+        printf("Lista cheia!\n");
+    }
+}
+
+void remover(int index) {
+    if (index < 0 || index >= tamanho) {
+        printf("Índice inválido!\n");
+    } else {
+        for (int i = index; i < tamanho - 1; i++) {
+            lista[i] = lista[i + 1];
+        }
+        tamanho--;
+    }
+}
+
+void imprimir() {
+    printf("Elementos da lista:\n");
+    for (int i = 0; i < tamanho; i++) {
+        printf("%d ", lista[i]);
+    }
+    printf("\n");
+}
+
+int buscar(int elemento) {
+    for (int i = 0; i < tamanho; i++) {
+        if (lista[i] == elemento) {
+            return i;
+        }
+    }
+    return -1; // Elemento não encontrado
+}
+
+void inverter() {
+    int inicio = 0;
+    int fim = tamanho - 1;
+    while (inicio < fim) {
+        int temp = lista[inicio];
+        lista[inicio] = lista[fim];
+        lista[fim] = temp;
+        inicio++;
+        fim--;
+    }
+}
+
+int encontrar_maximo() {
+    if (tamanho == 0) {
+        printf("A lista está vazia!\n");
+        return -1;
+    }
+    int maximo = lista[0];
+    for (int i = 1; i < tamanho; i++) {
+        if (lista[i] > maximo) {
+            maximo = lista[i];
+        }
+    }
+    return maximo;
+}
+
+int encontrar_minimo() {
+    if (tamanho == 0) {
+        printf("A lista está vazia!\n");
+        return -1;
+    }
+    int minimo = lista[0];
+    for (int i = 1; i < tamanho; i++) {
+        if (lista[i] < minimo) {
+            minimo = lista[i];
+        }
+    }
+    return minimo;
+}
+
+void ordenar() {
+    for (int i = 0; i < tamanho - 1; i++) {
+        for (int j = i + 1; j < tamanho; j++) {
+            if (lista[i] > lista[j]) {
+                int temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    inserir(10);
+    inserir(20);
+    inserir(30);
+    inserir(5);
+    inserir(25);
+    imprimir();
+
+    printf("Buscar 20: posição %d\n", buscar(20));
+    printf("Buscar 100: posição %d\n", buscar(100));
+
+    inverter();
+    printf("Lista após inverter:\n");
+    imprimir();
+
+    printf("Máximo: %d\n", encontrar_maximo());
+    printf("Mínimo: %d\n", encontrar_minimo());
+
+    ordenar();
+    printf("Lista após ordenar:\n");
+    imprimir();
+
+    remover(2);
+    printf("Lista após remover o elemento na posição 2:\n");
+    imprimir();
+
+    return 0;
+}

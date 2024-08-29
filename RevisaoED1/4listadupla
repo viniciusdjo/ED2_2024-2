@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// definir da estrutura de um nó da lista duplamente ligada
+typedef struct Node {
+    int data;            
+    struct Node* next;  
+    struct Node* prev;
+} Node;
+
+// ponteiro p/ o início da lista
+Node* head = NULL;
+
+// inserir um novo nó no início da lista
+void insertFront(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;                      
+    newNode->next = head;                       
+    newNode->prev = NULL;                        
+    if (head != NULL)                           
+        head->prev = newNode;                    
+    head = newNode;                             
+}
+
+// remover um nó específico da lista
+void deleteNode(Node* node) {
+    if (node == head)                          
+        head = node->next;                     
+    if (node->next != NULL)                     
+        node->next->prev = node->prev;        
+    if (node->prev != NULL)     
+        node->prev->next = node->next;        
+    free(node);                                
+}
+
+// imprimir todos os elementos da lista
+void printList() {
+    Node* temp = head;                        
+    while (temp != NULL) {                     
+        printf("%d ", temp->data);            
+        temp = temp->next;                   
+    }
+    printf("\n");                            
+}
+
+// buscar um valor específico na lista
+void search(int value) {
+    Node* temp = head;                         
+    while (temp != NULL) {                    
+        if (temp->data == value) {           
+            printf("Valor %d encontrado.\n", value);
+            printf("Nó atual: %d\n", temp->data);
+            printf("Vizinhos:\n");
+            if (temp->prev != NULL) {
+                printf("Anterior: %d\n", temp->prev->data);
+            } else {
+                printf("Anterior: Nenhum (é o primeiro nó)\n");
+            }
+            if (temp->next != NULL) {
+                printf("Próximo: %d\n", temp->next->data);
+            } else {
+                printf("Próximo: Nenhum (é o último nó)\n");
+            }
+            return;
+        }
+        temp = temp->next;                   
+    }
+    printf("Valor %d não encontrado.\n", value);
+}
+
+int main() {
+    int value;
+    
+    // inserir valores na lista a partir da entrada do usuário
+    printf("Insira os valores a serem adicionados à lista (digite -1 para parar):\n");
+    while (1) {
+        printf("Valor: ");
+        scanf("%d", &value);
+        if (value == -1) break;
+        insertFront(value);
+    }
+    
+    // imprimindo a lista
+    printf("Lista atual:\n");
+    printList();
+    
+    // buscar um valor específico
+    printf("Digite o valor a ser buscado: ");
+    scanf("%d", &value);
+    search(value);
+    
+    return 0;
+}

@@ -1,1 +1,43 @@
+/*
+O código abaixo realiza a impressão do vetor na ordem inversa.
+1 - comente o código
+2 - faça uma modificação para que seja possível inserir um vetor de n elementos.
+*/
 
+#include <stdio.h>
+
+#define TAM_MAX 100  // define um limite pro tamanho do vetor
+
+int main() {
+    int tamanhoV;        // declaração da variável para armazenar o tamanho do vetor
+    int vetor[TAM_MAX];  // declaração do vetor com tamanho máximo fixo
+    int i, temp;         // declara as variáveis de loop e auxiliar para troca
+
+    printf("Entre com o tamanho do vetor (até %d): ", TAM_MAX);
+    scanf("%d", &tamanhoV);
+
+    if (tamanhoV <= 0 || tamanhoV > TAM_MAX) { // validar o tamanho do vetor
+        printf("O tamanho do vetor deve ser entre 1 e %d.\n", TAM_MAX);
+        return 1; 
+    }
+
+    printf("Digite os %d elementos do vetor:\n", tamanhoV);  // solicita os elementos do vetor
+    for (i = 0; i < tamanhoV; i++) {
+        scanf("%d", &vetor[i]); // percorre cada elemento do vetor
+    }
+
+    // inverter o vetor
+    for (i = 0; i < tamanhoV / 2; i++) {
+        temp = vetor[i]; 
+        vetor[i] = vetor[tamanhoV - i - 1]; 
+        vetor[tamanhoV - i - 1] = temp;
+    }
+    
+    printf("Vetor invertido:\n"); // imprimir o vetor invertido
+    for (i = 0; i < tamanhoV; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    return 0; 
+}

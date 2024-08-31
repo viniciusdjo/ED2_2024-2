@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// estrutura de um nó na fila
+// estrutura do nó na fila
 typedef struct Node {
     int data;            // valor armazenado no nó
     struct Node* next;   // ponteiro p/ próximo nó

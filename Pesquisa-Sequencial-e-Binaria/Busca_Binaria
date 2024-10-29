@@ -1,0 +1,25 @@
+#include <stdlib.h>
+
+int comparar(const void *a, const void *b) {
+    return strcmp(*(const char **)a, *(const char **)b);
+}
+
+int busca_binaria(char *lista[], int tamanho, char *produto) {
+    int inicio = 0, fim = tamanho - 1;
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        int resultado = strcmp(lista[meio], produto);
+        if (resultado == 0) return meio;       // Produto encontrado
+        if (resultado < 0) inicio = meio + 1;  // Produto está na metade direita
+        else fim = meio - 1;                   // Produto está na metade esquerda
+    }
+    return -1;  // Produto não encontrado
+}
+
+double medir_tempo_busca_binaria(char *lista[], int tamanho, char *produto) {
+    qsort(lista, tamanho, sizeof(char *), comparar);  // Ordena a lista
+    clock_t inicio = clock();
+    busca_binaria(lista, tamanho, produto);
+    clock_t fim = clock();
+    return (double)(fim - inicio) / CLOCKS_PER_SEC;
+}

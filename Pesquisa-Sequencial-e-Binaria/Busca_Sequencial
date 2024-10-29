@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
+int busca_sequencial(char *lista[], int tamanho, char *produto) {
+    for (int i = 0; i < tamanho; i++) {
+        if (strcmp(lista[i], produto) == 0) {
+            return i;  // Produto encontrado
+        }
+    }
+    return -1;  // Produto não encontrado
+}
+
+double medir_tempo_busca_sequencial(char *lista[], int tamanho, char *produto) {
+    clock_t inicio = clock();
+    busca_sequencial(lista, tamanho, produto);
+    clock_t fim = clock();
+    return (double)(fim - inicio) / CLOCKS_PER_SEC;
+}

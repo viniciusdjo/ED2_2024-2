@@ -1,0 +1,1 @@
+executando o código com diferentes tamanhos de lista (1000, 5000, 10000), é observável uma diferença significativa no tempo de execução entre as duas abordagens, sendo a busca binária muito mais rápida em listas ordenadas.

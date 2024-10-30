@@ -1,4 +1,7 @@
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 int comparar(const void *a, const void *b) {
     return strcmp(*(const char **)a, *(const char **)b);
@@ -17,9 +20,37 @@ int busca_binaria(char *lista[], int tamanho, char *produto) {
 }
 
 double medir_tempo_busca_binaria(char *lista[], int tamanho, char *produto) {
-    qsort(lista, tamanho, sizeof(char *), comparar);  // Ordena a lista
+    // Ordena a lista antes da busca binária
+    qsort(lista, tamanho, sizeof(char *), comparar);
     clock_t inicio = clock();
     busca_binaria(lista, tamanho, produto);
     clock_t fim = clock();
     return (double)(fim - inicio) / CLOCKS_PER_SEC;
+}
+
+int main() {
+    int tamanhos[] = {1000, 5000, 10000};  // Tamanhos de listas para o teste
+    char *produto_procurado = "ProdutoX";  // Produto a ser buscado
+
+    for (int j = 0; j < 3; j++) {
+        int tamanho = tamanhos[j];
+        char *lista[tamanho];
+        
+        // Preenchendo a lista com produtos fictícios
+        for (int i = 0; i < tamanho; i++) {
+            lista[i] = malloc(20 * sizeof(char));
+            sprintf(lista[i], "Produto%d", i);
+        }
+        
+        // Medindo o tempo da busca binária (incluindo a ordenação)
+        double tempo_binario = medir_tempo_busca_binaria(lista, tamanho, produto_procurado);
+        printf("Lista com %d produtos - Tempo de busca binária (incluindo ordenação): %f segundos\n", tamanho, tempo_binario);
+        
+        // Liberando memória
+        for (int i = 0; i < tamanho; i++) {
+            free(lista[i]);
+        }
+    }
+    
+    return 0;
 }

@@ -1,0 +1,219 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Estrutura de um nó da árvore AVL
+struct Node {
+    int id;               // ID do cliente (chave de busca)
+    char name[50];        // Nome do cliente
+    struct Node *left;
+    struct Node *right;
+    int height;
+};
+
+// Função para criar um novo nó
+struct Node* newNode(int id, char name[]) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->id = id;
+    strcpy(node->name, name);
+    node->left = NULL;
+    node->right = NULL;
+    node->height = 1;  // novo nó é inicialmente uma folha
+    return node;
+}
+
+// Função para obter a altura de um nó
+int height(struct Node *N) {
+    if (N == NULL)
+        return 0;
+    return N->height;
+}
+
+// Função para obter o valor máximo entre dois inteiros
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Rotação à direita
+struct Node *rightRotate(struct Node *y) {
+    struct Node *x = y->left;
+    struct Node *T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = max(height(x->left), height(x->right)) + 1;
+
+    return x;
+}
+
+// Rotação à esquerda
+struct Node *leftRotate(struct Node *x) {
+    struct Node *y = x->right;
+    struct Node *T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
+
+    return y;
+}
+
+// Obter o fator de balanceamento do nó
+int getBalance(struct Node *N) {
+    if (N == NULL)
+        return 0;
+    return height(N->left) - height(N->right);
+}
+
+// Inserir um nó na árvore AVL
+struct Node* insert(struct Node* node, int id, char name[]) {
+    if (node == NULL)
+        return newNode(id, name);
+
+    if (id < node->id)
+        node->left = insert(node->left, id, name);
+    else if (id > node->id)
+        node->right = insert(node->right, id, name);
+    else
+        return node; // IDs duplicados não são permitidos
+
+    node->height = 1 + max(height(node->left), height(node->right));
+    int balance = getBalance(node);
+
+    // Rotação para balancear
+    if (balance > 1 && id < node->left->id)
+        return rightRotate(node);
+    if (balance < -1 && id > node->right->id)
+        return leftRotate(node);
+    if (balance > 1 && id > node->left->id) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+    if (balance < -1 && id < node->right->id) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+// Função para encontrar o menor nó em uma árvore
+struct Node *minValueNode(struct Node *node) {
+    struct Node *current = node;
+    while (current->left != NULL)
+        current = current->left;
+    return current;
+}
+
+// Função para remover um nó da árvore AVL
+struct Node* deleteNode(struct Node* root, int id) {
+    if (root == NULL)
+        return root;
+
+    if (id < root->id)
+        root->left = deleteNode(root->left, id);
+    else if (id > root->id)
+        root->right = deleteNode(root->right, id);
+    else {
+        if ((root->left == NULL) || (root->right == NULL)) {
+            struct Node *temp = root->left ? root->left : root->right;
+            if (temp == NULL) {
+                temp = root;
+                root = NULL;
+            } else
+                *root = *temp;
+            free(temp);
+        } else {
+            struct Node *temp = minValueNode(root->right);
+            root->id = temp->id;
+            strcpy(root->name, temp->name);
+            root->right = deleteNode(root->right, temp->id);
+        }
+    }
+
+    if (root == NULL)
+        return root;
+
+    root->height = 1 + max(height(root->left), height(root->right));
+    int balance = getBalance(root);
+
+    if (balance > 1 && getBalance(root->left) >= 0)
+        return rightRotate(root);
+    if (balance > 1 && getBalance(root->left) < 0) {
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+    if (balance < -1 && getBalance(root->right) <= 0)
+        return leftRotate(root);
+    if (balance < -1 && getBalance(root->right) > 0) {
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+
+    return root;
+}
+
+// Função para buscar um cliente pelo ID
+struct Node* search(struct Node* root, int id) {
+    if (root == NULL || root->id == id)
+        return root;
+
+    if (id < root->id)
+        return search(root->left, id);
+    return search(root->right, id);
+}
+
+// Exibir a árvore AVL em ordem
+void inOrder(struct Node *root) {
+    if (root != NULL) {
+        inOrder(root->left);
+        printf("ID: %d, Nome: %s\n", root->id, root->name);
+        inOrder(root->right);
+    }
+}
+
+// Função para simular a árvore AVL (pré-ordem)
+void preOrderPrint(struct Node *root, int level) {
+    if (root != NULL) {
+        for (int i = 0; i < level; i++) printf("   ");
+        printf("|-- ID: %d, Nome: %s\n", root->id, root->name);
+        preOrderPrint(root->left, level + 1);
+        preOrderPrint(root->right, level + 1);
+    }
+}
+
+// Função principal
+int main() {
+    struct Node *root = NULL;
+
+    // Inserção de nós
+    root = insert(root, 10, "Alice");
+    printf("\nÁrvore após inserção de Alice (10):\n");
+    preOrderPrint(root, 0);
+
+    root = insert(root, 70, "Grace");
+    printf("\nÁrvore após inserção de Grace (70):\n");
+    preOrderPrint(root, 0);
+
+    root = insert(root, 20, "Bob");
+    printf("\nÁrvore após inserção de Bob (20):\n");
+    preOrderPrint(root, 0);
+
+    // Remover nó
+    root = deleteNode(root, 20);
+    printf("\nÁrvore após remoção de Bob (20):\n");
+    preOrderPrint(root, 0);
+
+    // Buscar nó
+    struct Node* found = search(root, 70);
+    if (found != NULL)
+        printf("\nCliente encontrado: ID: %d, Nome: %s\n", found->id, found->name);
+    else
+        printf("\nCliente não encontrado.\n");
+
+    return 0;
+}
